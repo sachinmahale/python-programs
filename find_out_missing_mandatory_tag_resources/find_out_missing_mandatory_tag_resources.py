@@ -27,7 +27,7 @@ def name_contains_production1(tags):
     return False
 
 # Function to check if VPC name contains "SYC13"
-def name_contains_syc13(tags):
+def name_contains_prod1(tags):
     for tag in tags:
         if tag['Key'] == 'Name' and 'SYC13' in tag['Value']:
             return True
@@ -53,7 +53,7 @@ def check_ec2_related_resources():
                     eni_tags = eni.get('TagSet', [])
                     check_tags(eni_id, eni_tags, attached_instance_id=instance_id)
                     
-                    # Check Subnet for mandatory tags only if it belongs to a VPC with a name containing "syc13"
+                    # Check Subnet for mandatory tags only if it belongs to a VPC with a name containing "prod1"
                     subnet_id = eni['SubnetId']
                     subnet = ec2.describe_subnets(SubnetIds=[subnet_id])
                     subnet_tags = subnet['Subnets'][0].get('Tags', [])
@@ -63,7 +63,7 @@ def check_ec2_related_resources():
                     vpc = ec2.describe_vpcs(VpcIds=[vpc_id])
                     vpc_tags = vpc['Vpcs'][0].get('Tags', [])
                     
-                    # Only check subnet tags if the VPC name contains "syc13"
+                    # Only check subnet tags if the VPC name contains "prod1"
                     if name_contains_production1(vpc_tags):
                         check_tags(subnet_id, subnet_tags)
                 
@@ -90,7 +90,7 @@ def check_ec2_related_resources():
                     vpc = ec2.describe_vpcs(VpcIds=[vpc_id])
                     vpc_tags = vpc['Vpcs'][0].get('Tags', [])
 
-                    # Proceed if VPC name contains "syc13"
+                    # Proceed if VPC name contains "prod1"
                     if name_contains_production1(vpc_tags):
                         # Describe Route Tables for this VPC
                         route_tables = ec2.describe_route_tables(Filters=[{'Name': 'vpc-id', 'Values': [vpc_id]}])
@@ -112,8 +112,8 @@ def check_ec2_related_resources():
 #         vpc = ec2.describe_vpcs(VpcIds=[vpc_id])
 #         vpc_tags = vpc['Vpcs'][0].get('Tags', [])
         
-#         # Check if the VPC name contains "syc13"
-#         if name_contains_syc13(vpc_tags):
+#         # Check if the VPC name contains "prod1"
+#         if name_contains_prod1(vpc_tags):
 #             check_tags(subnet_id, tags)
 
 
@@ -213,7 +213,7 @@ def check_vpcs():
         tags = vpc.get('Tags', [])
         
         # Check if the VPC name contains "SYC13"
-        if name_contains_syc13(tags):
+        if name_contains_prod1(tags):
             check_tags(vpc_id, tags)
 
 # NACLs
@@ -232,7 +232,7 @@ def check_nacls():
         # Check if the VPC name contains "SYC13"
         if vpc_id in vpc_name_mapping:
             vpc_tags = vpc_name_mapping[vpc_id]
-            if name_contains_syc13(vpc_tags):
+            if name_contains_prod1(vpc_tags):
                 check_tags(nacl_id, tags)
 
 # Route Tables
@@ -251,7 +251,7 @@ def check_route_tables():
         # Check if the VPC name contains "SYC13"
         if vpc_id in vpc_name_mapping:
             vpc_tags = vpc_name_mapping[vpc_id]
-            if name_contains_syc13(vpc_tags):
+            if name_contains_prod1(vpc_tags):
                 check_tags(route_table_id, tags)
 
 # Check Internet Gateways
@@ -271,7 +271,7 @@ def check_internet_gateways():
             # Check if the VPC name contains "SYC13"
             if vpc_id in vpc_name_mapping:
                 vpc_tags = vpc_name_mapping[vpc_id]
-                if name_contains_syc13(vpc_tags):
+                if name_contains_prod1(vpc_tags):
                     check_tags(igw_id, tags)
 
 # Check NAT Gateways
@@ -291,7 +291,7 @@ def check_nat_gateways():
         # Check if the VPC ID exists in the mapping and if the name contains "SYC13"
         if vpc_id in vpc_name_mapping:
             vpc_tags = vpc_name_mapping[vpc_id]
-            if name_contains_syc13(vpc_tags):
+            if name_contains_prod1(vpc_tags):
                 check_tags(nat_id, tags)
 
 # Elastic IPs (EIPs)
@@ -314,7 +314,7 @@ def check_elastic_ips():
             # Check if the VPC ID exists in the mapping and if the name contains "SYC13"
             if vpc_id in vpc_name_mapping:
                 vpc_tags = vpc_name_mapping[vpc_id]
-                if name_contains_syc13(vpc_tags):
+                if name_contains_prod1(vpc_tags):
                     check_tags(public_ip, tags)
 
 # Main function to run all checks
